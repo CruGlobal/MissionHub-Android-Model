@@ -16,8 +16,19 @@ public class MissionHubModelGenerator {
 		schema.enableKeepSectionsByDefault();
 		
 		/**
-		 * Person
+		 * User/Person
 		 */
+		
+		Entity user = schema.addEntity("User");
+		user.addIdProperty();
+		user.addStringProperty("username");
+		user.addStringProperty("locale");
+		Property userPersonId = user.addLongProperty("person_id").getProperty();
+		user.addLongProperty("primary_organization_id");
+		user.addStringProperty("time_zone");
+		user.addDateProperty("updated_at");
+		user.addDateProperty("created_at");
+		user.addDateProperty("deleted_at");
 		
 		Entity person = schema.addEntity("Person");
 		person.addIdProperty();
@@ -31,7 +42,8 @@ public class MissionHubModelGenerator {
 		person.addDateProperty("birth_date");
 		person.addDateProperty("date_became_christian");
 		person.addDateProperty("graduation_date");
-		person.addLongProperty("user_id");
+		person.addToOne(user, person.addLongProperty("user_id").getProperty());
+		user.addToOne(person, userPersonId);
 		person.addLongProperty("fb_uid");
 		person.addDateProperty("updated_at");
 		person.addDateProperty("created_at");
@@ -54,42 +66,13 @@ public class MissionHubModelGenerator {
 		phoneNumber.addStringProperty("location");
 		phoneNumber.addBooleanProperty("primary");
 		phoneNumber.addStringProperty("txt_to_email");
-		phoneNumber.addStringProperty("email_updated_at");
+		phoneNumber.addDateProperty("email_updated_at");
 		Property phoneNumberPersonId = phoneNumber.addLongProperty("person_id").getProperty();
 		phoneNumber.addToOne(person, phoneNumberPersonId);
 		person.addToMany(phoneNumber, phoneNumberPersonId);
 		phoneNumber.addDateProperty("updated_at");
 		phoneNumber.addDateProperty("created_at");
 		phoneNumber.addDateProperty("deleted_at");
-		
-		/**
-		 * Comments
-		 */
-		
-		Entity followupComment = schema.addEntity("FollowupComment");
-		followupComment.addIdProperty();
-		Property followupCommentContactId = followupComment.addLongProperty("contact_id").getProperty();
-		followupComment.addToOne(person, followupCommentContactId, "contact");
-		person.addToMany(followupComment, followupCommentContactId, "comments_on_me");
-		Property followupCommentCommenterId = followupComment.addLongProperty("commenter_id").getProperty();
-		followupComment.addToOne(person, followupCommentCommenterId, "commenter");
-		person.addToMany(followupComment, followupCommentCommenterId, "followup_comments");
-		followupComment.addStringProperty("comment");
-		followupComment.addStringProperty("status");
-		followupComment.addDateProperty("updated_at");
-		followupComment.addDateProperty("created_at");
-		followupComment.addDateProperty("deleted_at");
-		
-		Entity rejoicable = schema.addEntity("Rejoicable");
-		rejoicable.addIdProperty();
-		rejoicable.addStringProperty("what");
-		rejoicable.addToOne(person, rejoicable.addLongProperty("created_by_id").getProperty());
-		Property rejoicableCommentId = rejoicable.addLongProperty("followup_comment_id").getProperty();
-		rejoicable.addToOne(followupComment, rejoicableCommentId);
-		followupComment.addToMany(rejoicable, rejoicableCommentId, "rejoicables");
-		rejoicable.addDateProperty("updated_at");
-		rejoicable.addDateProperty("created_at");
-		rejoicable.addDateProperty("deleted_at");
 		
 		/**
 		 * Organizations/Roles
@@ -109,6 +92,8 @@ public class MissionHubModelGenerator {
 		Entity role = schema.addEntity("Role");
 		role.addIdProperty();
 		role.addStringProperty("name");
+		role.addToOne(organization, role.addLongProperty("organization_id").getProperty());
+		role.addStringProperty("i18n");
 		role.addDateProperty("updated_at");
 		role.addDateProperty("created_at");
 		role.addDateProperty("deleted_at");
@@ -116,10 +101,16 @@ public class MissionHubModelGenerator {
 		Entity organizationalRole = schema.addEntity("OrganizationalRole");
 		organizationalRole.addIdProperty();
 		organizationalRole.addStringProperty("followup_status");
+		Property organizationRolePersonId = organizationalRole.addLongProperty("person_id").getProperty();
+		organizationalRole.addToOne(phoneNumber, organizationRolePersonId);
+		person.addToMany(organizationalRole, organizationRolePersonId);
+		organizationalRole.addToOne(organization, organizationalRole.addLongProperty("organization_id").getProperty());
 		Property organizationRoleRoleId = organizationalRole.addLongProperty("role_id").getProperty();
 		organizationalRole.addToOne(role, organizationRoleRoleId);
 		role.addToMany(organizationalRole, organizationRoleRoleId);
-		role.addDateProperty("start_data");
+		organizationalRole.addDateProperty("start_date");
+		organizationalRole.addDateProperty("end_date");
+		organizationalRole.addBooleanProperty("deleted");
 		organizationalRole.addDateProperty("archive_date");
 		organizationalRole.addDateProperty("updated_at");
 		organizationalRole.addDateProperty("created_at");
@@ -139,6 +130,63 @@ public class MissionHubModelGenerator {
 		contactAssignment.addDateProperty("deleted_at");
 		
 		/**
+		 * Groups
+		 */
+		
+		Entity group = schema.addEntity("Group");
+		group.setTableName("Groups"); // group is a reserved word
+		group.addIdProperty();
+		group.addStringProperty("name");
+		group.addStringProperty("location");
+		group.addStringProperty("meets");
+		group.addStringProperty("meeting_day");
+		group.addIntProperty("start_time");
+		group.addIntProperty("end_time");
+		Property groupOrganizationId = group.addLongProperty("organization_id").getProperty();
+		group.addToOne(organization, groupOrganizationId);
+		organization.addToMany(group, groupOrganizationId);
+		group.addBooleanProperty("list_publicly");
+		group.addBooleanProperty("approve_join_requests");
+		group.addDateProperty("updated_at");
+		group.addDateProperty("created_at");
+		group.addDateProperty("deleted_at");
+		
+		/**
+		 * Comments
+		 */
+		
+		Entity followupComment = schema.addEntity("FollowupComment");
+		followupComment.addIdProperty();
+		Property followupCommentContactId = followupComment.addLongProperty("contact_id").getProperty();
+		followupComment.addToOne(person, followupCommentContactId, "contact");
+		person.addToMany(followupComment, followupCommentContactId, "comments_on_me");
+		Property followupCommentCommenterId = followupComment.addLongProperty("commenter_id").getProperty();
+		followupComment.addToOne(person, followupCommentCommenterId, "commenter");
+		person.addToMany(followupComment, followupCommentCommenterId, "followup_comments");
+		followupComment.addToOne(organization, followupComment.addLongProperty("organization_id").getProperty());
+		followupComment.addStringProperty("comment");
+		followupComment.addStringProperty("status");
+		followupComment.addDateProperty("updated_at");
+		followupComment.addDateProperty("created_at");
+		followupComment.addDateProperty("deleted_at");
+		
+		Entity rejoicable = schema.addEntity("Rejoicable");
+		rejoicable.addIdProperty();
+		rejoicable.addStringProperty("what");
+		Property rejoicablePersonId = rejoicable.addLongProperty("person_id").getProperty();
+		rejoicable.addToOne(person, rejoicablePersonId);
+		Property rejoicableCreatedById = rejoicable.addLongProperty("created_by_id").getProperty();
+		rejoicable.addToOne(phoneNumber, rejoicableCreatedById);
+		person.addToMany(rejoicable, rejoicableCreatedById);
+		Property rejoicableCommentId = rejoicable.addLongProperty("followup_comment_id").getProperty();
+		rejoicable.addToOne(followupComment, rejoicableCommentId);
+		followupComment.addToMany(rejoicable, rejoicableCommentId, "rejoicables");
+		rejoicable.addToOne(organization, rejoicable.addLongProperty("organization_id").getProperty());
+		rejoicable.addDateProperty("updated_at");
+		rejoicable.addDateProperty("created_at");
+		rejoicable.addDateProperty("deleted_at");
+		
+		/**
 		 * Surveys
 		 */
 		
@@ -149,6 +197,7 @@ public class MissionHubModelGenerator {
 		question.addStringProperty("label");
 		question.addStringProperty("content");
 		question.addStringProperty("person");
+		question.addStringProperty("object_name");
 		question.addStringProperty("attribute_name");
 		question.addBooleanProperty("web_only");
 		question.addStringProperty("trigger_words");
@@ -165,6 +214,7 @@ public class MissionHubModelGenerator {
 		survey.addToOne(organization, surveyOrganizationId);
 		organization.addToMany(survey, surveyOrganizationId, "surveys");
 		survey.addStringProperty("post_survey_message");
+		survey.addStringProperty("terminology");
 		survey.addStringProperty("login_paragraph");
 		survey.addBooleanProperty("is_frozen");
 		survey.addDateProperty("updated_at");
