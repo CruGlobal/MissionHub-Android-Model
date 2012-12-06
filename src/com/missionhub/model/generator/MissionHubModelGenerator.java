@@ -42,12 +42,25 @@ public class MissionHubModelGenerator {
 		person.addDateProperty("birth_date");
 		person.addDateProperty("date_became_christian");
 		person.addDateProperty("graduation_date");
+		person.addStringProperty("picture");
 		person.addToOne(user, person.addLongProperty("user_id").getProperty());
 		user.addToOne(person, userPersonId);
 		person.addLongProperty("fb_uid");
 		person.addDateProperty("updated_at");
 		person.addDateProperty("created_at");
 		person.addDateProperty("deleted_at");
+		
+		Entity currentAddress = schema.addEntity("CurrentAddress");
+		currentAddress.addIdProperty();
+		Property currentAddressPersonId = currentAddress.addLongProperty("person_id").getProperty();
+		currentAddress.addToOne(person, currentAddressPersonId);
+		person.addToMany(currentAddress, currentAddressPersonId);
+		currentAddress.addStringProperty("address1");
+		currentAddress.addStringProperty("address2");
+		currentAddress.addStringProperty("city");
+		currentAddress.addStringProperty("state");
+		currentAddress.addStringProperty("country");
+		currentAddress.addStringProperty("zip");
 		
 		Entity emailAddress = schema.addEntity("EmailAddress");
 		emailAddress.addIdProperty();
