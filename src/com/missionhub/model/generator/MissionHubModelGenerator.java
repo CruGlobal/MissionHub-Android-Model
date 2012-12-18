@@ -21,14 +21,10 @@ public class MissionHubModelGenerator {
 		
 		Entity user = schema.addEntity("User");
 		user.addIdProperty();
-		user.addStringProperty("username");
-		user.addStringProperty("locale");
 		Property userPersonId = user.addLongProperty("person_id").getProperty();
 		user.addLongProperty("primary_organization_id");
-		user.addStringProperty("time_zone");
 		user.addDateProperty("updated_at");
 		user.addDateProperty("created_at");
-		user.addDateProperty("deleted_at");
 		
 		Entity person = schema.addEntity("Person");
 		person.addIdProperty();
@@ -48,19 +44,18 @@ public class MissionHubModelGenerator {
 		person.addLongProperty("fb_uid");
 		person.addDateProperty("updated_at");
 		person.addDateProperty("created_at");
-		person.addDateProperty("deleted_at");
 		
-		Entity currentAddress = schema.addEntity("CurrentAddress");
-		currentAddress.addIdProperty();
-		Property currentAddressPersonId = currentAddress.addLongProperty("person_id").getProperty();
-		currentAddress.addToOne(person, currentAddressPersonId);
-		person.addToMany(currentAddress, currentAddressPersonId);
-		currentAddress.addStringProperty("address1");
-		currentAddress.addStringProperty("address2");
-		currentAddress.addStringProperty("city");
-		currentAddress.addStringProperty("state");
-		currentAddress.addStringProperty("country");
-		currentAddress.addStringProperty("zip");
+		Entity address = schema.addEntity("Address");
+		address.addIdProperty();
+		Property addressPersonId = address.addLongProperty("person_id").getProperty();
+		address.addStringProperty("address1");
+		address.addStringProperty("address2");
+		address.addStringProperty("city");
+		address.addStringProperty("state");
+		address.addStringProperty("country");
+		address.addStringProperty("zip");
+		address.addToOne(person, addressPersonId);
+		person.addToMany(address, addressPersonId);
 		
 		Entity emailAddress = schema.addEntity("EmailAddress");
 		emailAddress.addIdProperty();
@@ -71,7 +66,6 @@ public class MissionHubModelGenerator {
 		person.addToMany(emailAddress, emailAddressPersonId);		
 		emailAddress.addDateProperty("updated_at");
 		emailAddress.addDateProperty("created_at");
-		emailAddress.addDateProperty("deleted_at");
 		
 		Entity phoneNumber = schema.addEntity("PhoneNumber");
 		phoneNumber.addIdProperty();
@@ -85,7 +79,6 @@ public class MissionHubModelGenerator {
 		person.addToMany(phoneNumber, phoneNumberPersonId);
 		phoneNumber.addDateProperty("updated_at");
 		phoneNumber.addDateProperty("created_at");
-		phoneNumber.addDateProperty("deleted_at");
 		
 		/**
 		 * Organizations/Roles
@@ -100,7 +93,6 @@ public class MissionHubModelGenerator {
 		organization.addStringProperty("status");
 		organization.addDateProperty("updated_at");
 		organization.addDateProperty("created_at");
-		organization.addDateProperty("deleted_at");
 		
 		Entity role = schema.addEntity("Role");
 		role.addIdProperty();
@@ -109,7 +101,6 @@ public class MissionHubModelGenerator {
 		role.addStringProperty("i18n");
 		role.addDateProperty("updated_at");
 		role.addDateProperty("created_at");
-		role.addDateProperty("deleted_at");
 		
 		Entity organizationalRole = schema.addEntity("OrganizationalRole");
 		organizationalRole.addIdProperty();
@@ -122,12 +113,8 @@ public class MissionHubModelGenerator {
 		organizationalRole.addToOne(role, organizationRoleRoleId);
 		role.addToMany(organizationalRole, organizationRoleRoleId);
 		organizationalRole.addDateProperty("start_date");
-		organizationalRole.addDateProperty("end_date");
-		organizationalRole.addBooleanProperty("deleted");
-		organizationalRole.addDateProperty("archive_date");
 		organizationalRole.addDateProperty("updated_at");
 		organizationalRole.addDateProperty("created_at");
-		organizationalRole.addDateProperty("deleted_at");
 		
 		Entity contactAssignment = schema.addEntity("ContactAssignment");
 		contactAssignment.addIdProperty();
@@ -137,10 +124,9 @@ public class MissionHubModelGenerator {
 		Property contactAssignmentAssignedToId = contactAssignment.addLongProperty("assigned_to_id").getProperty();
 		contactAssignment.addToOne(person, contactAssignmentAssignedToId, "person_assigned_to");
 		person.addToMany(contactAssignment, contactAssignmentAssignedToId, "assigned_to_me");
-		contactAssignment.addToOne(organization, contactAssignment.addLongProperty("organziation_id").getProperty());
+		contactAssignment.addToOne(organization, contactAssignment.addLongProperty("organization_id").getProperty());
 		contactAssignment.addDateProperty("updated_at");
 		contactAssignment.addDateProperty("created_at");
-		contactAssignment.addDateProperty("deleted_at");
 		
 		/**
 		 * Groups
@@ -162,7 +148,6 @@ public class MissionHubModelGenerator {
 		group.addBooleanProperty("approve_join_requests");
 		group.addDateProperty("updated_at");
 		group.addDateProperty("created_at");
-		group.addDateProperty("deleted_at");
 		
 		/**
 		 * Comments
@@ -181,7 +166,6 @@ public class MissionHubModelGenerator {
 		followupComment.addStringProperty("status");
 		followupComment.addDateProperty("updated_at");
 		followupComment.addDateProperty("created_at");
-		followupComment.addDateProperty("deleted_at");
 		
 		Entity rejoicable = schema.addEntity("Rejoicable");
 		rejoicable.addIdProperty();
@@ -197,7 +181,6 @@ public class MissionHubModelGenerator {
 		rejoicable.addToOne(organization, rejoicable.addLongProperty("organization_id").getProperty());
 		rejoicable.addDateProperty("updated_at");
 		rejoicable.addDateProperty("created_at");
-		rejoicable.addDateProperty("deleted_at");
 		
 		/**
 		 * Surveys
@@ -209,7 +192,6 @@ public class MissionHubModelGenerator {
 		question.addStringProperty("style");
 		question.addStringProperty("label");
 		question.addStringProperty("content");
-		question.addStringProperty("person");
 		question.addStringProperty("object_name");
 		question.addStringProperty("attribute_name");
 		question.addBooleanProperty("web_only");
@@ -218,7 +200,6 @@ public class MissionHubModelGenerator {
 		question.addBooleanProperty("hidden");
 		question.addDateProperty("updated_at");
 		question.addDateProperty("created_at");
-		question.addDateProperty("deleted_at");
 		
 		Entity survey = schema.addEntity("Survey");
 		survey.addIdProperty();
@@ -232,7 +213,6 @@ public class MissionHubModelGenerator {
 		survey.addBooleanProperty("is_frozen");
 		survey.addDateProperty("updated_at");
 		survey.addDateProperty("created_at");
-		survey.addDateProperty("deleted_at");
 		
 		Entity smsKeyword = schema.addEntity("SmsKeyword");
 		smsKeyword.addIdProperty();
@@ -240,7 +220,7 @@ public class MissionHubModelGenerator {
 		Property smsKeywordOrganizationId = smsKeyword.addLongProperty("organization_id").getProperty();
 		smsKeyword.addToOne(organization, smsKeywordOrganizationId);
 		organization.addToMany(smsKeyword, smsKeywordOrganizationId, "keywords");
-		person.addToMany(smsKeyword, smsKeyword.addLongProperty("user_id").getProperty());
+		user.addToMany(smsKeyword, smsKeyword.addLongProperty("user_id").getProperty());
 		smsKeyword.addStringProperty("explanation");
 		smsKeyword.addStringProperty("state");
 		smsKeyword.addStringProperty("initial_response");
@@ -249,7 +229,24 @@ public class MissionHubModelGenerator {
 		survey.addToMany(smsKeyword, smsKeywordSurveyId);
 		smsKeyword.addDateProperty("updated_at");
 		smsKeyword.addDateProperty("created_at");
-		smsKeyword.addDateProperty("deleted_at");
+		
+		Entity answerSheet = schema.addEntity("AnswerSheet");
+		answerSheet.addIdProperty();
+		Property ansertSheetPersonId = answerSheet.addLongProperty("person_id").getProperty();
+		answerSheet.addToOne(person, ansertSheetPersonId);
+		person.addToMany(answerSheet, ansertSheetPersonId);
+		answerSheet.addToOne(survey, answerSheet.addLongProperty("survey_id").getProperty());
+		answerSheet.addDateProperty("created_at");
+		answerSheet.addDateProperty("updated_at");
+		answerSheet.addDateProperty("completed_at");		
+		
+		Entity answer = schema.addEntity("Answer");
+		answer.addIdProperty();
+		Property answerAnswerSheetId = answer.addLongProperty("answer_sheet_id").getProperty();
+		answer.addToOne(answerSheet, answerAnswerSheetId);
+		answerSheet.addToMany(answer, answerAnswerSheetId);
+		answer.addToOne(question, answer.addLongProperty("question_id").getProperty());
+		answer.addStringProperty("value");
 		
 		/**
 		 * Settings
