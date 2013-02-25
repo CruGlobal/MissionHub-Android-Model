@@ -1,4 +1,4 @@
-package com.missionhub.model.generator;
+package com.missionhub.android.model;
 
 import de.greenrobot.daogenerator.DaoGenerator;
 import de.greenrobot.daogenerator.Entity;
@@ -8,8 +8,8 @@ import de.greenrobot.daogenerator.Schema;
 public class MissionHubModelGenerator {
 
 	public static final int VERSION = 1;
-	public static final String PACKAGE = "com.missionhub.model";
-	public static final String OUT_DIR = "../missionhub-android/src";
+	public static final String PACKAGE = "com.missionhub.android.model";
+	public static final String OUT_DIR = "../MissionHub-Android/app/src";
 	
 	public static void main(String[] args) throws Exception {
 		Schema schema = new Schema(VERSION, PACKAGE);
