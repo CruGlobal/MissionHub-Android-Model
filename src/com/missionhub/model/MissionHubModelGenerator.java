@@ -7,13 +7,14 @@ import de.greenrobot.daogenerator.Schema;
 
 public class MissionHubModelGenerator {
 
-	public static final int VERSION = 1;
-	public static final String PACKAGE = "com.missionhub.model";
+    public static final int VERSION = 2;
+    public static final String PACKAGE = "com.missionhub.model";
 	public static final String OUT_DIR = "../MissionHub-Android/app/src";
 	
 	public static void main(String[] args) throws Exception {
 		Schema schema = new Schema(VERSION, PACKAGE);
-		schema.enableKeepSectionsByDefault();
+        schema.enableActiveEntitiesByDefault();
+        schema.enableKeepSectionsByDefault();
 		
 		/**
 		 * User/Person
@@ -54,7 +55,8 @@ public class MissionHubModelGenerator {
 		address.addStringProperty("state");
 		address.addStringProperty("country");
 		address.addStringProperty("zip");
-		address.addToOne(person, addressPersonId);
+        address.addStringProperty("address_type");
+        address.addToOne(person, addressPersonId);
 		person.addToMany(address, addressPersonId);
 		
 		Entity emailAddress = schema.addEntity("EmailAddress");
