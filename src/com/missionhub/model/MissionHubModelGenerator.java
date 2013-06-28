@@ -81,8 +81,8 @@ public class MissionHubModelGenerator {
 		phoneNumber.addDateProperty("created_at");
 		
 		/**
-		 * Organizations/Roles
-		 */
+         * Organizations/Roles/Permissions
+         */
 		
 		Entity organization = schema.addEntity("Organization");
 		organization.addIdProperty();
@@ -93,30 +93,51 @@ public class MissionHubModelGenerator {
 		organization.addStringProperty("status");
 		organization.addDateProperty("updated_at");
 		organization.addDateProperty("created_at");
-		
-		Entity role = schema.addEntity("Role");
-		role.addIdProperty();
-		role.addStringProperty("name");
-		role.addToOne(organization, role.addLongProperty("organization_id").getProperty());
-		role.addStringProperty("i18n");
-		role.addDateProperty("updated_at");
-		role.addDateProperty("created_at");
-		
-		Entity organizationalRole = schema.addEntity("OrganizationalRole");
-		organizationalRole.addIdProperty();
-		organizationalRole.addStringProperty("followup_status");
-		Property organizationRolePersonId = organizationalRole.addLongProperty("person_id").getProperty();
-		organizationalRole.addToOne(phoneNumber, organizationRolePersonId);
-		person.addToMany(organizationalRole, organizationRolePersonId);
-		organizationalRole.addToOne(organization, organizationalRole.addLongProperty("organization_id").getProperty());
-		Property organizationRoleRoleId = organizationalRole.addLongProperty("role_id").getProperty();
-		organizationalRole.addToOne(role, organizationRoleRoleId);
-		role.addToMany(organizationalRole, organizationRoleRoleId);
-		organizationalRole.addDateProperty("start_date");
-		organizationalRole.addDateProperty("updated_at");
-		organizationalRole.addDateProperty("created_at");
-		
-		Entity contactAssignment = schema.addEntity("ContactAssignment");
+
+        Entity label = schema.addEntity("Label");
+        label.addIdProperty();
+        label.addStringProperty("name");
+        Property labelOrganizationId = label.addLongProperty("organization_id").getProperty();
+        label.addToOne(organization, labelOrganizationId);
+        organization.addToMany(label, labelOrganizationId);
+        label.addStringProperty("i18n");
+        label.addDateProperty("updated_at");
+        label.addDateProperty("created_at");
+
+        Entity permission = schema.addEntity("Permission");
+        permission.addIdProperty();
+        permission.addStringProperty("name");
+        permission.addStringProperty("i18n");
+        permission.addDateProperty("updated_at");
+        permission.addDateProperty("created_at");
+
+        Entity organizationalLabel = schema.addEntity("OrganizationalLabel");
+        organizationalLabel.addIdProperty();
+        Property organizationRolePersonId = organizationalLabel.addLongProperty("person_id").getProperty();
+        organizationalLabel.addToOne(person, organizationRolePersonId);
+        person.addToMany(organizationalLabel, organizationRolePersonId);
+        organizationalLabel.addToOne(organization, organizationalLabel.addLongProperty("organization_id").getProperty());
+        organizationalLabel.addToOne(person, organizationalLabel.addLongProperty("added_by_id").getProperty(), "addedByPerson");
+        organizationalLabel.addToOne(label, organizationalLabel.addLongProperty("label_id").getProperty());
+        organizationalLabel.addDateProperty("start_date");
+        organizationalLabel.addDateProperty("updated_at");
+        organizationalLabel.addDateProperty("created_at");
+        organizationalLabel.addDateProperty("removed_date");
+
+        Entity organizationalPermission = schema.addEntity("OrganizationalPermission");
+        organizationalPermission.addIdProperty();
+        Property organizationalPermissionPersonId = organizationalPermission.addLongProperty("person_id").getProperty();
+        organizationalPermission.addToOne(person, organizationalPermissionPersonId);
+        person.addToMany(organizationalPermission, organizationalPermissionPersonId);
+        organizationalPermission.addToOne(permission, organizationalPermission.addLongProperty("permission_id").getProperty());
+        organizationalPermission.addToOne(organization, organizationalPermission.addLongProperty("organization_id").getProperty());
+        organizationalPermission.addStringProperty("followup_status");
+        organizationalPermission.addDateProperty("start_date");
+        organizationalPermission.addDateProperty("updated_at");
+        organizationalPermission.addDateProperty("created_at");
+        organizationalPermission.addDateProperty("archive_date");
+
+        Entity contactAssignment = schema.addEntity("ContactAssignment");
 		contactAssignment.addIdProperty();
 		Property contactAssignmentPersonId = contactAssignment.addLongProperty("person_id").getProperty();
 		contactAssignment.addToOne(person, contactAssignmentPersonId, "person");
@@ -127,64 +148,53 @@ public class MissionHubModelGenerator {
 		contactAssignment.addToOne(organization, contactAssignment.addLongProperty("organization_id").getProperty());
 		contactAssignment.addDateProperty("updated_at");
 		contactAssignment.addDateProperty("created_at");
-		
-		/**
-		 * Groups
-		 */
-		
-		Entity group = schema.addEntity("Group");
-		group.setTableName("Groups"); // group is a reserved word
-		group.addIdProperty();
-		group.addStringProperty("name");
-		group.addStringProperty("location");
-		group.addStringProperty("meets");
-		group.addStringProperty("meeting_day");
-		group.addIntProperty("start_time");
-		group.addIntProperty("end_time");
-		Property groupOrganizationId = group.addLongProperty("organization_id").getProperty();
-		group.addToOne(organization, groupOrganizationId);
-		organization.addToMany(group, groupOrganizationId);
-		group.addBooleanProperty("list_publicly");
-		group.addBooleanProperty("approve_join_requests");
-		group.addDateProperty("updated_at");
-		group.addDateProperty("created_at");
-		
-		/**
-		 * Comments
-		 */
-		
-		Entity followupComment = schema.addEntity("FollowupComment");
-		followupComment.addIdProperty();
-		Property followupCommentContactId = followupComment.addLongProperty("contact_id").getProperty();
-		followupComment.addToOne(person, followupCommentContactId, "contact");
-		person.addToMany(followupComment, followupCommentContactId, "comments_on_me");
-		Property followupCommentCommenterId = followupComment.addLongProperty("commenter_id").getProperty();
-		followupComment.addToOne(person, followupCommentCommenterId, "commenter");
-		person.addToMany(followupComment, followupCommentCommenterId, "followup_comments");
-		followupComment.addToOne(organization, followupComment.addLongProperty("organization_id").getProperty());
-		followupComment.addStringProperty("comment");
-		followupComment.addStringProperty("status");
-		followupComment.addDateProperty("updated_at");
-		followupComment.addDateProperty("created_at");
-		
-		Entity rejoicable = schema.addEntity("Rejoicable");
-		rejoicable.addIdProperty();
-		rejoicable.addStringProperty("what");
-		Property rejoicablePersonId = rejoicable.addLongProperty("person_id").getProperty();
-		rejoicable.addToOne(person, rejoicablePersonId);
-		Property rejoicableCreatedById = rejoicable.addLongProperty("created_by_id").getProperty();
-		rejoicable.addToOne(phoneNumber, rejoicableCreatedById);
-		person.addToMany(rejoicable, rejoicableCreatedById);
-		Property rejoicableCommentId = rejoicable.addLongProperty("followup_comment_id").getProperty();
-		rejoicable.addToOne(followupComment, rejoicableCommentId);
-		followupComment.addToMany(rejoicable, rejoicableCommentId, "rejoicables");
-		rejoicable.addToOne(organization, rejoicable.addLongProperty("organization_id").getProperty());
-		rejoicable.addDateProperty("updated_at");
-		rejoicable.addDateProperty("created_at");
-		
-		/**
-		 * Surveys
-		 */
+
+        /**
+         * Interactions
+         */
+
+        Entity interaction = schema.addEntity("Interaction");
+        interaction.addIdProperty();
+        Property interactionTypeId = interaction.addLongProperty("interaction_type_id").getProperty();
+        Property interactionReceiverId = interaction.addLongProperty("receiver_id").getProperty();
+        interaction.addToOne(person, interactionReceiverId, "receiver");
+        person.addToMany(interaction, interactionReceiverId, "receivedInteractions");
+        Property interactionCreatedById = interaction.addLongProperty("created_by_id").getProperty();
+        interaction.addToOne(person, interactionCreatedById, "creator");
+        person.addToMany(interaction, interactionCreatedById, "createdInteractions");
+        Property interactionUpdatedById = interaction.addLongProperty("updated_by_id").getProperty();
+        interaction.addToOne(person, interactionUpdatedById, "updater");
+        person.addToMany(interaction, interactionUpdatedById, "updatedInteractions");
+        interaction.addStringProperty("comment");
+        interaction.addStringProperty("privacy_setting");
+        interaction.addDateProperty("timestamp");
+
+        Entity interactionInitiator = schema.addEntity("InteractionInitiator");
+        interactionInitiator.addIdProperty();
+        Property interactionInitiatorPersonId = interactionInitiator.addLongProperty("person_id").getProperty();
+        person.addToMany(interactionInitiator, interactionInitiatorPersonId);
+        interactionInitiator.addToOne(person, interactionInitiatorPersonId);
+        Property interactionInitiatorInteractionId = interactionInitiator.addLongProperty("interaction_id").getProperty();
+        interaction.addToMany(interactionInitiator, interactionInitiatorInteractionId);
+        interactionInitiator.addToOne(interaction, interactionInitiatorInteractionId);
+        interactionInitiator.addDateProperty("updated_at");
+        interactionInitiator.addDateProperty("created_at");
+
+        Entity interactionType = schema.addEntity("InteractionType");
+        interactionType.addIdProperty();
+        Property interactionTypeOrganizationId = interactionType.addLongProperty("organization_id").getProperty();
+        organization.addToMany(interactionType, interactionTypeOrganizationId);
+        interactionType.addToOne(organization, interactionTypeOrganizationId);
+        interactionType.addStringProperty("name");
+        interactionType.addStringProperty("i18n");
+        interactionType.addStringProperty("icon");
+        interactionType.addDateProperty("updated_at");
+        interactionType.addDateProperty("created_at");
+        interaction.addToOne(interactionType, interactionTypeId);
+
+        /**
+         * Surveys
+         */
 		
 		Entity question = schema.addEntity("Question");
 		question.addIdProperty();
