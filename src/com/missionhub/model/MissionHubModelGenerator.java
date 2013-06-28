@@ -24,10 +24,10 @@ public class MissionHubModelGenerator {
 		user.addIdProperty();
 		Property userPersonId = user.addLongProperty("person_id").getProperty();
 		user.addLongProperty("primary_organization_id");
-		user.addDateProperty("updated_at");
-		user.addDateProperty("created_at");
-		
-		Entity person = schema.addEntity("Person");
+        user.addStringProperty("updated_at");
+        user.addStringProperty("created_at");
+
+        Entity person = schema.addEntity("Person");
 		person.addIdProperty();
 		person.addStringProperty("first_name");
 		person.addStringProperty("last_name");
@@ -36,17 +36,17 @@ public class MissionHubModelGenerator {
 		person.addStringProperty("year_in_school");
 		person.addStringProperty("major");
 		person.addStringProperty("minor");
-		person.addDateProperty("birth_date");
-		person.addDateProperty("date_became_christian");
-		person.addDateProperty("graduation_date");
-		person.addStringProperty("picture");
+        person.addStringProperty("birth_date");
+        person.addStringProperty("date_became_christian");
+        person.addStringProperty("graduation_date");
+        person.addStringProperty("picture");
 		person.addToOne(user, person.addLongProperty("user_id").getProperty());
 		user.addToOne(person, userPersonId);
 		person.addLongProperty("fb_uid");
-		person.addDateProperty("updated_at");
-		person.addDateProperty("created_at");
-		
-		Entity address = schema.addEntity("Address");
+        person.addStringProperty("updated_at");
+        person.addStringProperty("created_at");
+
+        Entity address = schema.addEntity("Address");
 		address.addIdProperty();
 		Property addressPersonId = address.addLongProperty("person_id").getProperty();
 		address.addStringProperty("address1");
@@ -65,24 +65,24 @@ public class MissionHubModelGenerator {
 		emailAddress.addBooleanProperty("primary");
 		Property emailAddressPersonId = emailAddress.addLongProperty("person_id").getProperty();
 		emailAddress.addToOne(person, emailAddressPersonId);
-		person.addToMany(emailAddress, emailAddressPersonId);		
-		emailAddress.addDateProperty("updated_at");
-		emailAddress.addDateProperty("created_at");
-		
-		Entity phoneNumber = schema.addEntity("PhoneNumber");
+		person.addToMany(emailAddress, emailAddressPersonId);
+        emailAddress.addStringProperty("updated_at");
+        emailAddress.addStringProperty("created_at");
+
+        Entity phoneNumber = schema.addEntity("PhoneNumber");
 		phoneNumber.addIdProperty();
 		phoneNumber.addStringProperty("number");
 		phoneNumber.addStringProperty("location");
 		phoneNumber.addBooleanProperty("primary");
 		phoneNumber.addStringProperty("txt_to_email");
-		phoneNumber.addDateProperty("email_updated_at");
-		Property phoneNumberPersonId = phoneNumber.addLongProperty("person_id").getProperty();
+        phoneNumber.addStringProperty("email_updated_at");
+        Property phoneNumberPersonId = phoneNumber.addLongProperty("person_id").getProperty();
 		phoneNumber.addToOne(person, phoneNumberPersonId);
 		person.addToMany(phoneNumber, phoneNumberPersonId);
-		phoneNumber.addDateProperty("updated_at");
-		phoneNumber.addDateProperty("created_at");
-		
-		/**
+        phoneNumber.addStringProperty("updated_at");
+        phoneNumber.addStringProperty("created_at");
+
+        /**
          * Organizations/Roles/Permissions
          */
 		
@@ -93,8 +93,8 @@ public class MissionHubModelGenerator {
 		organization.addStringProperty("ancestry");
 		organization.addBooleanProperty("show_sub_orgs");
 		organization.addStringProperty("status");
-		organization.addDateProperty("updated_at");
-		organization.addDateProperty("created_at");
+        organization.addStringProperty("updated_at");
+        organization.addStringProperty("created_at");
 
         Entity label = schema.addEntity("Label");
         label.addIdProperty();
@@ -103,15 +103,15 @@ public class MissionHubModelGenerator {
         label.addToOne(organization, labelOrganizationId);
         organization.addToMany(label, labelOrganizationId);
         label.addStringProperty("i18n");
-        label.addDateProperty("updated_at");
-        label.addDateProperty("created_at");
+        label.addStringProperty("updated_at");
+        label.addStringProperty("created_at");
 
         Entity permission = schema.addEntity("Permission");
         permission.addIdProperty();
         permission.addStringProperty("name");
         permission.addStringProperty("i18n");
-        permission.addDateProperty("updated_at");
-        permission.addDateProperty("created_at");
+        permission.addStringProperty("updated_at");
+        permission.addStringProperty("created_at");
 
         Entity organizationalLabel = schema.addEntity("OrganizationalLabel");
         organizationalLabel.addIdProperty();
@@ -121,10 +121,10 @@ public class MissionHubModelGenerator {
         organizationalLabel.addToOne(organization, organizationalLabel.addLongProperty("organization_id").getProperty());
         organizationalLabel.addToOne(person, organizationalLabel.addLongProperty("added_by_id").getProperty(), "addedByPerson");
         organizationalLabel.addToOne(label, organizationalLabel.addLongProperty("label_id").getProperty());
-        organizationalLabel.addDateProperty("start_date");
-        organizationalLabel.addDateProperty("updated_at");
-        organizationalLabel.addDateProperty("created_at");
-        organizationalLabel.addDateProperty("removed_date");
+        organizationalLabel.addStringProperty("start_date");
+        organizationalLabel.addStringProperty("updated_at");
+        organizationalLabel.addStringProperty("created_at");
+        organizationalLabel.addStringProperty("removed_date");
 
         Entity organizationalPermission = schema.addEntity("OrganizationalPermission");
         organizationalPermission.addIdProperty();
@@ -134,10 +134,10 @@ public class MissionHubModelGenerator {
         organizationalPermission.addToOne(permission, organizationalPermission.addLongProperty("permission_id").getProperty());
         organizationalPermission.addToOne(organization, organizationalPermission.addLongProperty("organization_id").getProperty());
         organizationalPermission.addStringProperty("followup_status");
-        organizationalPermission.addDateProperty("start_date");
-        organizationalPermission.addDateProperty("updated_at");
-        organizationalPermission.addDateProperty("created_at");
-        organizationalPermission.addDateProperty("archive_date");
+        organizationalPermission.addStringProperty("start_date");
+        organizationalPermission.addStringProperty("updated_at");
+        organizationalPermission.addStringProperty("created_at");
+        organizationalPermission.addStringProperty("archive_date");
 
         Entity contactAssignment = schema.addEntity("ContactAssignment");
 		contactAssignment.addIdProperty();
@@ -148,8 +148,8 @@ public class MissionHubModelGenerator {
 		contactAssignment.addToOne(person, contactAssignmentAssignedToId, "person_assigned_to");
 		person.addToMany(contactAssignment, contactAssignmentAssignedToId, "assigned_to_me");
 		contactAssignment.addToOne(organization, contactAssignment.addLongProperty("organization_id").getProperty());
-		contactAssignment.addDateProperty("updated_at");
-		contactAssignment.addDateProperty("created_at");
+        contactAssignment.addStringProperty("updated_at");
+        contactAssignment.addStringProperty("created_at");
 
         /**
          * Interactions
@@ -169,7 +169,7 @@ public class MissionHubModelGenerator {
         person.addToMany(interaction, interactionUpdatedById, "updatedInteractions");
         interaction.addStringProperty("comment");
         interaction.addStringProperty("privacy_setting");
-        interaction.addDateProperty("timestamp");
+        interaction.addStringProperty("timestamp");
 
         Entity interactionInitiator = schema.addEntity("InteractionInitiator");
         interactionInitiator.addIdProperty();
@@ -179,8 +179,8 @@ public class MissionHubModelGenerator {
         Property interactionInitiatorInteractionId = interactionInitiator.addLongProperty("interaction_id").getProperty();
         interaction.addToMany(interactionInitiator, interactionInitiatorInteractionId);
         interactionInitiator.addToOne(interaction, interactionInitiatorInteractionId);
-        interactionInitiator.addDateProperty("updated_at");
-        interactionInitiator.addDateProperty("created_at");
+        interactionInitiator.addStringProperty("updated_at");
+        interactionInitiator.addStringProperty("created_at");
 
         Entity interactionType = schema.addEntity("InteractionType");
         interactionType.addIdProperty();
@@ -190,8 +190,8 @@ public class MissionHubModelGenerator {
         interactionType.addStringProperty("name");
         interactionType.addStringProperty("i18n");
         interactionType.addStringProperty("icon");
-        interactionType.addDateProperty("updated_at");
-        interactionType.addDateProperty("created_at");
+        interactionType.addStringProperty("updated_at");
+        interactionType.addStringProperty("created_at");
         interaction.addToOne(interactionType, interactionTypeId);
 
         /**
@@ -210,10 +210,10 @@ public class MissionHubModelGenerator {
 		question.addStringProperty("trigger_words");
 		question.addStringProperty("notify_via");
 		question.addBooleanProperty("hidden");
-		question.addDateProperty("updated_at");
-		question.addDateProperty("created_at");
-		
-		Entity survey = schema.addEntity("Survey");
+        question.addStringProperty("updated_at");
+        question.addStringProperty("created_at");
+
+        Entity survey = schema.addEntity("Survey");
 		survey.addIdProperty();
 		survey.addStringProperty("title");
 		Property surveyOrganizationId = survey.addLongProperty("organization_id").getProperty();
@@ -223,10 +223,10 @@ public class MissionHubModelGenerator {
 		survey.addStringProperty("terminology");
 		survey.addStringProperty("login_paragraph");
 		survey.addBooleanProperty("is_frozen");
-		survey.addDateProperty("updated_at");
-		survey.addDateProperty("created_at");
-		
-		Entity smsKeyword = schema.addEntity("SmsKeyword");
+        survey.addStringProperty("updated_at");
+        survey.addStringProperty("created_at");
+
+        Entity smsKeyword = schema.addEntity("SmsKeyword");
 		smsKeyword.addIdProperty();
 		smsKeyword.addStringProperty("keyword");
 		Property smsKeywordOrganizationId = smsKeyword.addLongProperty("organization_id").getProperty();
@@ -239,20 +239,20 @@ public class MissionHubModelGenerator {
 		Property smsKeywordSurveyId = smsKeyword.addLongProperty("survey_id").getProperty();
 		smsKeyword.addToOne(survey, smsKeywordSurveyId);
 		survey.addToMany(smsKeyword, smsKeywordSurveyId);
-		smsKeyword.addDateProperty("updated_at");
-		smsKeyword.addDateProperty("created_at");
-		
-		Entity answerSheet = schema.addEntity("AnswerSheet");
+        smsKeyword.addStringProperty("updated_at");
+        smsKeyword.addStringProperty("created_at");
+
+        Entity answerSheet = schema.addEntity("AnswerSheet");
 		answerSheet.addIdProperty();
 		Property answerSheetPersonId = answerSheet.addLongProperty("person_id").getProperty();
 		answerSheet.addToOne(person, answerSheetPersonId);
 		person.addToMany(answerSheet, answerSheetPersonId);
 		answerSheet.addToOne(survey, answerSheet.addLongProperty("survey_id").getProperty());
-		answerSheet.addDateProperty("created_at");
-		answerSheet.addDateProperty("updated_at");
-		answerSheet.addDateProperty("completed_at");		
-		
-		Entity answer = schema.addEntity("Answer");
+        answerSheet.addStringProperty("created_at");
+        answerSheet.addStringProperty("updated_at");
+        answerSheet.addStringProperty("completed_at");
+
+        Entity answer = schema.addEntity("Answer");
 		answer.addIdProperty();
 		Property answerAnswerSheetId = answer.addLongProperty("answer_sheet_id").getProperty();
 		answer.addToOne(answerSheet, answerAnswerSheetId);
