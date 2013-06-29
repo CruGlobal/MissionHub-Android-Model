@@ -161,6 +161,9 @@ public class MissionHubModelGenerator {
         Property interactionReceiverId = interaction.addLongProperty("receiver_id").getProperty();
         interaction.addToOne(person, interactionReceiverId, "receiver");
         person.addToMany(interaction, interactionReceiverId, "receivedInteractions");
+        Property interactionOrganization = interaction.addLongProperty("organization_id").getProperty();
+        interaction.addToOne(organization, interactionOrganization);
+        organization.addToMany(interaction, interactionOrganization);
         Property interactionCreatedById = interaction.addLongProperty("created_by_id").getProperty();
         interaction.addToOne(person, interactionCreatedById, "creator");
         person.addToMany(interaction, interactionCreatedById, "createdInteractions");
@@ -170,6 +173,8 @@ public class MissionHubModelGenerator {
         interaction.addStringProperty("comment");
         interaction.addStringProperty("privacy_setting");
         interaction.addStringProperty("timestamp");
+        interaction.addStringProperty("created_at");
+        interaction.addStringProperty("updated_at");
 
         Entity interactionInitiator = schema.addEntity("InteractionInitiator");
         interactionInitiator.addIdProperty();
