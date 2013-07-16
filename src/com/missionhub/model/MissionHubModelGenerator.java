@@ -26,6 +26,7 @@ public class MissionHubModelGenerator {
 		user.addLongProperty("primary_organization_id");
         user.addStringProperty("updated_at");
         user.addStringProperty("created_at");
+        user.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity person = schema.addEntity("Person");
 		person.addIdProperty();
@@ -45,6 +46,7 @@ public class MissionHubModelGenerator {
 		person.addLongProperty("fb_uid");
         person.addStringProperty("updated_at");
         person.addStringProperty("created_at");
+        person.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity address = schema.addEntity("Address");
 		address.addIdProperty();
@@ -68,6 +70,7 @@ public class MissionHubModelGenerator {
 		person.addToMany(emailAddress, emailAddressPersonId);
         emailAddress.addStringProperty("updated_at");
         emailAddress.addStringProperty("created_at");
+        emailAddress.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity phoneNumber = schema.addEntity("PhoneNumber");
 		phoneNumber.addIdProperty();
@@ -81,6 +84,7 @@ public class MissionHubModelGenerator {
 		person.addToMany(phoneNumber, phoneNumberPersonId);
         phoneNumber.addStringProperty("updated_at");
         phoneNumber.addStringProperty("created_at");
+        phoneNumber.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         /**
          * Organizations/Roles/Permissions
@@ -95,6 +99,7 @@ public class MissionHubModelGenerator {
 		organization.addStringProperty("status");
         organization.addStringProperty("updated_at");
         organization.addStringProperty("created_at");
+        organization.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity label = schema.addEntity("Label");
         label.addIdProperty();
@@ -105,6 +110,7 @@ public class MissionHubModelGenerator {
         label.addStringProperty("i18n");
         label.addStringProperty("updated_at");
         label.addStringProperty("created_at");
+        label.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity permission = schema.addEntity("Permission");
         permission.addIdProperty();
@@ -112,6 +118,7 @@ public class MissionHubModelGenerator {
         permission.addStringProperty("i18n");
         permission.addStringProperty("updated_at");
         permission.addStringProperty("created_at");
+        permission.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity organizationalLabel = schema.addEntity("OrganizationalLabel");
         organizationalLabel.addIdProperty();
@@ -125,6 +132,7 @@ public class MissionHubModelGenerator {
         organizationalLabel.addStringProperty("updated_at");
         organizationalLabel.addStringProperty("created_at");
         organizationalLabel.addStringProperty("removed_date");
+        organizationalLabel.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity organizationalPermission = schema.addEntity("OrganizationalPermission");
         organizationalPermission.addIdProperty();
@@ -138,6 +146,8 @@ public class MissionHubModelGenerator {
         organizationalPermission.addStringProperty("updated_at");
         organizationalPermission.addStringProperty("created_at");
         organizationalPermission.addStringProperty("archive_date");
+        organizationalPermission.implementsInterface(PACKAGE + ".TimestampedEntity");
+
 
         Entity contactAssignment = schema.addEntity("ContactAssignment");
 		contactAssignment.addIdProperty();
@@ -150,6 +160,8 @@ public class MissionHubModelGenerator {
 		contactAssignment.addToOne(organization, contactAssignment.addLongProperty("organization_id").getProperty());
         contactAssignment.addStringProperty("updated_at");
         contactAssignment.addStringProperty("created_at");
+        contactAssignment.implementsInterface(PACKAGE + ".TimestampedEntity");
+
 
         /**
          * Interactions
@@ -175,6 +187,7 @@ public class MissionHubModelGenerator {
         interaction.addStringProperty("timestamp");
         interaction.addStringProperty("created_at");
         interaction.addStringProperty("updated_at");
+        interaction.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity interactionInitiator = schema.addEntity("InteractionInitiator");
         interactionInitiator.addIdProperty();
@@ -186,6 +199,7 @@ public class MissionHubModelGenerator {
         interactionInitiator.addToOne(interaction, interactionInitiatorInteractionId);
         interactionInitiator.addStringProperty("updated_at");
         interactionInitiator.addStringProperty("created_at");
+        interactionInitiator.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity interactionType = schema.addEntity("InteractionType");
         interactionType.addIdProperty();
@@ -198,6 +212,8 @@ public class MissionHubModelGenerator {
         interactionType.addStringProperty("updated_at");
         interactionType.addStringProperty("created_at");
         interaction.addToOne(interactionType, interactionTypeId);
+        interactionType.implementsInterface(PACKAGE + ".TimestampedEntity");
+
 
         /**
          * Surveys
@@ -217,6 +233,7 @@ public class MissionHubModelGenerator {
 		question.addBooleanProperty("hidden");
         question.addStringProperty("updated_at");
         question.addStringProperty("created_at");
+        question.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity survey = schema.addEntity("Survey");
 		survey.addIdProperty();
@@ -230,6 +247,7 @@ public class MissionHubModelGenerator {
 		survey.addBooleanProperty("is_frozen");
         survey.addStringProperty("updated_at");
         survey.addStringProperty("created_at");
+        survey.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity smsKeyword = schema.addEntity("SmsKeyword");
 		smsKeyword.addIdProperty();
@@ -246,6 +264,7 @@ public class MissionHubModelGenerator {
 		survey.addToMany(smsKeyword, smsKeywordSurveyId);
         smsKeyword.addStringProperty("updated_at");
         smsKeyword.addStringProperty("created_at");
+        smsKeyword.implementsInterface(PACKAGE + ".TimestampedEntity");
 
         Entity answerSheet = schema.addEntity("AnswerSheet");
 		answerSheet.addIdProperty();
@@ -256,6 +275,8 @@ public class MissionHubModelGenerator {
         answerSheet.addStringProperty("created_at");
         answerSheet.addStringProperty("updated_at");
         answerSheet.addStringProperty("completed_at");
+        answerSheet.implementsInterface(PACKAGE + ".TimestampedEntity");
+
 
         Entity answer = schema.addEntity("Answer");
 		answer.addIdProperty();
